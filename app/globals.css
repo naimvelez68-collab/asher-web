@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Paleta base — identidad ASHER ── */
+  --color-background: #f7f4ed;
+  --color-surface: #fbf9f5;
+  --color-surface-raised: #efe6da;
+  --color-border: rgba(11, 25, 86, 0.12);
+
+  /* ── Textos ── */
+  --color-foreground: #0b1956;
+  --color-foreground-muted: rgba(11, 25, 86, 0.62);
+  --color-foreground-subtle: rgba(11, 25, 86, 0.4);
+
+  /* ── Acento único — cambiar aquí cambia todo ── */
+  --color-accent: #8084b7;
+  --color-accent-light: rgba(128, 132, 183, 0.15);
+  --color-accent-hover: #6d71a3;
+
+  /* ── Paleta de marca ASHER (identidad oficial) ── */
+  --color-asher-navy: #0b1956;
+  --color-asher-ivory: #f7f4ed;
+  --color-asher-sand: #dbc8b6;
+  --color-asher-slate: #8084b7;
+  --color-asher-olive: #4c5340;
+
+  /* ── Tipografías ── */
+  --font-sans: var(--font-geist-sans), "Inter", system-ui, sans-serif;
+  --font-serif: var(--font-serif-brand), "Libre Baskerville", "Georgia", serif;
+
+  /* ── Radios ── */
+  --radius-card: 1rem;
+  --radius-modal: 1.25rem;
+  --radius-btn: 9999px;
+}
+
+/* ── Variables shadcn-compatibles (usadas por el CinematicFooter / GSAP) ── */
+:root {
+  --background: #f7f4ed;
+  --foreground: #0b1956;
+  --primary: #8084b7;
+  --secondary: #4c5340;
+  --muted-foreground: rgba(11, 25, 86, 0.5);
+  --destructive: #b23a3a;
+  --border: rgba(11, 25, 86, 0.12);
+}
+
+/* ── Base global ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+}
+
+/* ── Noise texture overlay (igual al PrismaHero) ── */
+.noise-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ── Scrollbar minimalista ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--color-background); }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
+
+/* ── Selección de texto ── */
+::selection {
+  background: var(--color-accent-light);
+  color: var(--color-foreground);
+}
