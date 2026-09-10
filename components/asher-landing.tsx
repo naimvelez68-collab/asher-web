@@ -1,7 +1,11 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import Lenis from "lenis";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { AsherHero } from "./ui/asher-hero";
+import { AsherStoryScroll } from "./ui/asher-story-scroll";
 import { RutasSection } from "./ui/rutas-section";
 import { DiferenciadorSection } from "./ui/diferenciador-section";
 import { DiagnosticoSection } from "./ui/diagnostico-section";
@@ -9,6 +13,35 @@ import { CinematicFooter } from "./ui/motion-footer";
 import { LeadModal } from "./ui/lead-modal";
 import { ChatWidget } from "./ui/chat-widget";
 import type { RutaId } from "@/types";
+
+gsap.registerPlugin(ScrollTrigger);
+
+/** Scroll suave estilo Habito Studio, sincronizado con el ticker de GSAP/ScrollTrigger. */
+function useSmoothScroll() {
+  useEffect(() => {
+    const lenis = new Lenis();
+    lenis.on("scroll", ScrollTrigger.update);
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+
+    const onAnchorClick = (e: MouseEvent) => {
+      const anchor = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
+      if (!anchor) return;
+      const id = anchor.getAttribute("href")?.slice(1);
+      if (!id) return;
+      const target = document.getElementById(id);
+      if (!target) return;
+      e.preventDefault();
+      lenis.scrollTo(target, { offset: -72 });
+    };
+    document.addEventListener("click", onAnchorClick);
+
+    return () => {
+      document.removeEventListener("click", onAnchorClick);
+      lenis.destroy();
+    };
+  }, []);
+}
 
 interface ModalState {
   open: boolean;
@@ -25,6 +58,7 @@ const MODAL_INIT: ModalState = {
 };
 
 export const AsherLanding = () => {
+  useSmoothScroll();
   const [modal, setModal] = useState<ModalState>(MODAL_INIT);
 
   const abrirModal = useCallback(
@@ -63,6 +97,7 @@ export const AsherLanding = () => {
     <>
       <main style={{ background: "#F7F4ED" }}>
         <AsherHero onContact={onContactGeneral} />
+        <AsherStoryScroll onContact={onContactGeneral} />
         <RutasSection onContact={onContactRuta} />
         <DiferenciadorSection />
         <DiagnosticoSection onContact={onContactDiagnostico} />

@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, type ElementType } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ArrowRight } from "lucide-react";
-import FlowArt, { FlowSection } from "./story-scroll";
+import { Menu, X, ArrowRight, Play } from "lucide-react";
 import { InteractiveHoverButton } from "./interactive-hover-button";
 
 interface AsherHeroProps {
@@ -25,15 +24,7 @@ const navItems = [
 // ── Isotipo pequeño para el logotype (recorta solo la marca A/S de la imagen) ──
 function AsherMarkIcon({ size = 34 }: { size?: number }) {
   return (
-    <div
-      style={{
-        position: "relative",
-        width: size,
-        height: size,
-        flexShrink: 0,
-        overflow: "hidden",
-      }}
-    >
+    <div style={{ position: "relative", width: size, height: size, flexShrink: 0, overflow: "hidden" }}>
       <img
         src="/asher-logo-mark.png"
         alt=""
@@ -66,20 +57,14 @@ function AsherHeader({ onContact }: { onContact: (o?: string) => void }) {
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 md:px-10">
 
-        {/* ── Izquierda: Logotipo ── */}
         <a href="#inicio" className="flex items-center gap-2.5 select-none" aria-label="Inicio ASHER">
           <AsherMarkIcon size={32} />
           <span className="flex flex-col leading-none">
-            <span className="text-sm font-black tracking-[0.14em] uppercase" style={{ color: NAVY }}>
-              Asher
-            </span>
-            <span className="text-[8px] font-medium tracking-[0.28em] uppercase" style={{ color: "rgba(11,25,86,0.5)" }}>
-              Consulting
-            </span>
+            <span className="text-sm font-black tracking-[0.14em] uppercase" style={{ color: NAVY }}>Asher</span>
+            <span className="text-[8px] font-medium tracking-[0.28em] uppercase" style={{ color: "rgba(11,25,86,0.5)" }}>Consulting</span>
           </span>
         </a>
 
-        {/* ── Centro: Nav links (desktop) ── */}
         <nav className="hidden md:flex items-center gap-8">
           {navItems.map((item) => (
             <a
@@ -95,7 +80,6 @@ function AsherHeader({ onContact }: { onContact: (o?: string) => void }) {
           ))}
         </nav>
 
-        {/* ── Derecha: CTA + hamburguesa ── */}
         <div className="flex items-center gap-3">
           <InteractiveHoverButton
             text="Reservar consultoría"
@@ -108,11 +92,7 @@ function AsherHeader({ onContact }: { onContact: (o?: string) => void }) {
           <button
             onClick={() => setMenuAbierto((v) => !v)}
             className="flex md:hidden items-center justify-center w-9 h-9 rounded-full transition-colors"
-            style={{
-              background: "rgba(11,25,86,0.06)",
-              border: "1px solid rgba(11,25,86,0.15)",
-              color: NAVY,
-            }}
+            style={{ background: "rgba(11,25,86,0.06)", border: "1px solid rgba(11,25,86,0.15)", color: NAVY }}
             aria-label="Menú"
           >
             {menuAbierto ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
@@ -155,201 +135,167 @@ function AsherHeader({ onContact }: { onContact: (o?: string) => void }) {
   );
 }
 
-const headingCls = "text-[clamp(2.75rem,9vw,8.5rem)] font-black uppercase leading-[0.88] tracking-tight";
-const eyebrowCls = "text-xs font-bold uppercase tracking-[0.2em]";
-const bodyCls = "text-[clamp(1rem,2vw,1.4rem)] font-normal leading-relaxed";
-const pillarLabelCls = "mb-2 text-sm font-bold uppercase tracking-wider";
-const pillarTextCls = "text-[clamp(0.85rem,1.2vw,1rem)] leading-relaxed opacity-80";
+// ── Texto revelado línea por línea (estilo split-lines de Habito) ─────────────
+function SplitLines({ lines, delayStart = 0.15 }: { lines: string[]; delayStart?: number }) {
+  return (
+    <>
+      {lines.map((line, i) => (
+        <span key={line} style={{ display: "block", overflow: "hidden" }}>
+          <motion.span
+            style={{ display: "block" }}
+            initial={{ y: "110%" }}
+            animate={{ y: "0%" }}
+            transition={{ duration: 0.85, delay: delayStart + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {line}
+          </motion.span>
+        </span>
+      ))}
+    </>
+  );
+}
 
-// ── Hero: secuencia "story-scroll" de marca ────────────────────────────────────
+// ── CTA minimalista con subrayado + doble flecha deslizante (estilo Habito) ───
+function HeroLink({
+  text,
+  onClick,
+  href,
+}: {
+  text: string;
+  onClick?: () => void;
+  href?: string;
+}) {
+  const Comp: ElementType = href ? "a" : "button";
+  return (
+    <Comp
+      href={href}
+      onClick={onClick}
+      className="group inline-flex items-center gap-3 text-sm font-semibold sm:text-base"
+      style={{ color: NAVY }}
+    >
+      <span className="relative pb-1">
+        {text}
+        <span
+          className="absolute -bottom-0.5 left-0 h-px w-full origin-right scale-x-0 transition-transform duration-500 ease-out group-hover:origin-left group-hover:scale-x-100"
+          style={{ background: NAVY }}
+        />
+      </span>
+      <span className="relative flex h-7 w-7 flex-shrink-0 items-center justify-center overflow-hidden rounded-full" style={{ background: "rgba(11,25,86,0.08)" }}>
+        <ArrowRight
+          className="absolute h-3.5 w-3.5 transition-transform duration-300 ease-out group-hover:translate-x-5 group-hover:-translate-y-5"
+        />
+        <ArrowRight
+          className="absolute h-3.5 w-3.5 -translate-x-5 translate-y-5 transition-transform duration-300 ease-out group-hover:translate-x-0 group-hover:translate-y-0"
+        />
+      </span>
+    </Comp>
+  );
+}
+
+// ── Insignia giratoria — "showreel" de marca ──────────────────────────────────
+function SpinningBadge({ size = 128 }: { size?: number }) {
+  const r = size / 2 - 13;
+  const cx = size / 2;
+  const cy = size / 2;
+  const d = `M ${cx - r},${cy} a ${r},${r} 0 1,1 ${r * 2},0 a ${r},${r} 0 1,1 -${r * 2},0`;
+
+  return (
+    <div style={{ position: "relative", width: size, height: size }}>
+      <svg viewBox={`0 0 ${size} ${size}`} className="animate-spin-badge" style={{ width: "100%", height: "100%" }}>
+        <defs>
+          <path id="asher-badge-path" d={d} />
+        </defs>
+        <text fontSize="9.5" fontWeight={700} letterSpacing="2.5" fill={NAVY}>
+          <textPath href="#asher-badge-path" startOffset="0%">
+            ASHER CONSULTING • ASHER CONSULTING •&nbsp;
+          </textPath>
+        </text>
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div
+          className="flex items-center justify-center rounded-full"
+          style={{ width: size * 0.34, height: size * 0.34, background: NAVY }}
+        >
+          <Play className="h-3.5 w-3.5" style={{ color: IVORY, marginLeft: 2 }} fill={IVORY} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const MARQUEE_ITEMS = Array.from({ length: 6 });
+
+// ── Hero — inspirado en habito.studio ─────────────────────────────────────────
 export const AsherHero = ({ onContact }: AsherHeroProps) => {
   return (
     <>
       <AsherHeader onContact={onContact} />
 
-      <FlowArt aria-label="Presentación ASHER Consulting">
+      <section id="inicio" className="relative w-full overflow-hidden" style={{ background: IVORY }}>
 
-        {/* 01 — Quiénes somos */}
-        <FlowSection id="inicio" aria-label="Quiénes somos" style={{ backgroundColor: NAVY, color: IVORY }}>
-          <p className={eyebrowCls}>01 — Quiénes somos</p>
-          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.25)" }} />
-          <h1 className={headingCls}>
-            Claridad
-            <br />
-            Para
-            <br />
-            Crecer
-          </h1>
-          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.25)" }} />
-          <p className={cx("mt-auto max-w-[50ch]", bodyCls)}>
-            Consultora integral de marca, marketing, tecnología y blindaje legal.
-            Construimos, mejoramos, digitalizamos y protegemos tu marca — con respaldo legal desde el día uno.
-          </p>
-        </FlowSection>
+        {/* Resplandor atmosférico */}
+        <div
+          className="pointer-events-none absolute -top-24 right-[-12%] h-[70%] w-[65%] rounded-full blur-[140px] opacity-[0.16]"
+          style={{ background: `radial-gradient(circle, ${SLATE} 0%, transparent 70%)` }}
+        />
 
-        {/* 02 — Lo que hacemos */}
-        <FlowSection id="rutas-preview" aria-label="Lo que hacemos" style={{ backgroundColor: "#F1E7DA", color: NAVY }}>
-          <p className={eyebrowCls}>02 — Lo que hacemos</p>
-          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(11,25,86,0.15)" }} />
-          <h2 className={headingCls}>
-            Cinco
-            <br />
-            Rutas
-            <br />
-            Claras
-          </h2>
-          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(11,25,86,0.15)" }} />
-          <p className={cx("max-w-[50ch]", bodyCls)}>
-            Cinco caminos claros hacia el crecimiento, según el momento en el que está tu marca hoy.
-          </p>
-          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(11,25,86,0.15)" }} />
-          <div className="flex flex-wrap gap-[3vw]">
-            <div className="min-w-[180px] flex-1">
-              <p className={pillarLabelCls}>Crear marca</p>
-              <p className={pillarTextCls}>Para emprendedores y negocios que arrancan con todo.</p>
-            </div>
-            <div className="min-w-[180px] flex-1">
-              <p className={pillarLabelCls}>Mejorar marca</p>
-              <p className={pillarTextCls}>Para marcas que ya existen pero merecen verse mejor.</p>
-            </div>
-            <div className="min-w-[180px] flex-1">
-              <p className={pillarLabelCls}>Publicidad</p>
-              <p className={pillarTextCls}>Para negocios que necesitan más clientes y más ventas.</p>
-            </div>
-          </div>
-          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(11,25,86,0.15)" }} />
-          <div className="flex flex-wrap gap-[3vw]">
-            <div className="min-w-[180px] flex-1">
-              <p className={pillarLabelCls}>Digitalización</p>
-              <p className={pillarTextCls}>Para quienes necesitan presencia digital o herramientas tech.</p>
-            </div>
-            <div className="min-w-[180px] flex-1">
-              <p className={pillarLabelCls}>Blindaje legal</p>
-              <p className={pillarTextCls}>Respaldo legal como base de todo lo que construyes.</p>
-            </div>
-            <div className="min-w-[180px] flex-1">
-              <p className={pillarLabelCls}>Diagnóstico</p>
-              <p className={pillarTextCls}>3 preguntas para saber exactamente qué necesitas primero.</p>
-            </div>
-          </div>
-        </FlowSection>
+        <div className="relative mx-auto flex min-h-[100dvh] w-full max-w-7xl flex-col justify-center gap-10 px-5 pb-16 pt-28 sm:px-8 sm:pt-32 md:px-12 lg:pt-28">
 
-        {/* 03 — Cómo trabajamos */}
-        <FlowSection id="proceso" aria-label="Cómo trabajamos" style={{ backgroundColor: SLATE, color: IVORY }}>
-          <p className={eyebrowCls}>03 — Cómo trabajamos</p>
-          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.3)" }} />
-          <h2 className={headingCls}>
-            Diagnóstico.
-            <br />
-            Estrategia.
-            <br />
-            Ejecución.
-          </h2>
-          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.3)" }} />
-          <p className={cx("max-w-[50ch]", bodyCls)}>
-            Un mismo equipo acompaña tu marca de principio a fin. Sin fragmentar tu proyecto entre múltiples agencias.
-          </p>
-          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.3)" }} />
-          <div className="flex flex-wrap gap-[3vw]">
-            <div className="min-w-[180px] flex-1">
-              <p className={pillarLabelCls}>01 — Diagnóstico</p>
-              <p className={pillarTextCls}>Entendemos tu marca, tu mercado y tu punto de partida real.</p>
-            </div>
-            <div className="min-w-[180px] flex-1">
-              <p className={pillarLabelCls}>02 — Estrategia</p>
-              <p className={pillarTextCls}>Diseñamos un plan de marca, comunicación y crecimiento a la medida.</p>
-            </div>
-            <div className="min-w-[180px] flex-1">
-              <p className={pillarLabelCls}>03 — Ejecución</p>
-              <p className={pillarTextCls}>Implementamos con rigor: diseño, contenido, campañas y desarrollo.</p>
-            </div>
+          {/* Insignia giratoria flotante */}
+          <div className="pointer-events-none absolute right-5 top-28 hidden sm:block md:right-10 lg:right-14 lg:top-24">
+            <SpinningBadge size={132} />
           </div>
-          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.3)" }} />
-          <div className="flex flex-wrap gap-[3vw]">
-            <div className="min-w-[180px] flex-1">
-              <p className={pillarLabelCls}>04 — Blindaje</p>
-              <p className={pillarTextCls}>Registro de marca, contratos y cumplimiento legal desde el inicio.</p>
-            </div>
-            <div className="min-w-[180px] flex-1">
-              <p className={pillarLabelCls}>05 — Medición</p>
-              <p className={pillarTextCls}>Seguimos resultados reales y ajustamos lo que haga falta.</p>
-            </div>
-            <div className="min-w-[180px] flex-1">
-              <p className={pillarLabelCls}>06 — Crecimiento</p>
-              <p className={pillarTextCls}>Tu marca evoluciona; nosotros seguimos a tu lado en cada etapa.</p>
-            </div>
-          </div>
-        </FlowSection>
 
-        {/* 04 — Nuestra visión */}
-        <FlowSection id="vision" aria-label="Nuestra visión" style={{ backgroundColor: OLIVE, color: IVORY }}>
-          <p className={eyebrowCls}>04 — Nuestra visión</p>
-          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.25)" }} />
-          <h2 className={headingCls}>
-            Un mañana
-            <br />
-            Mejor,
-            <br />
-            Juntos
-          </h2>
-          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.25)" }} />
-          <p className={cx("max-w-[50ch]", bodyCls)}>
-            No ejecutamos tareas sueltas. Construimos crecimiento integral, con lo que construyes quedando protegido de verdad.
-          </p>
-          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.25)" }} />
-          <div className="flex flex-wrap gap-[3vw]">
-            <div className="min-w-[180px] flex-1">
-              <p className={pillarLabelCls}>100+</p>
-              <p className={pillarTextCls}>Empresas asesoradas en branding, marketing y legal.</p>
-            </div>
-            <div className="min-w-[180px] flex-1">
-              <p className={pillarLabelCls}>5</p>
-              <p className={pillarTextCls}>Disciplinas núcleo bajo un mismo techo, un mismo equipo.</p>
-            </div>
-            <div className="min-w-[180px] flex-1">
-              <p className={pillarLabelCls}>Día uno</p>
-              <p className={pillarTextCls}>Respaldo legal desde el primer paso, no como último trámite.</p>
-            </div>
-          </div>
-        </FlowSection>
-
-        {/* 05 — Trabajemos juntos */}
-        <FlowSection id="contacto-hero" aria-label="Trabajemos juntos" style={{ backgroundColor: NAVY, color: IVORY }}>
-          <p className={eyebrowCls}>05 — Trabajemos juntos</p>
-          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.25)" }} />
-          <h2 className={headingCls}>
-            ¿Empezamos?
-          </h2>
-          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.25)" }} />
-          <p className={cx("max-w-[50ch]", bodyCls)}>
-            Cuéntanos en qué punto está tu marca y te decimos exactamente por dónde empezar.
-          </p>
-          <div className="mt-auto flex flex-wrap items-center gap-3">
-            <InteractiveHoverButton
-              text="Reservar consultoría"
-              icon={<ArrowRight className="h-4 w-4 flex-shrink-0" />}
-              onClick={() => onContact("hero_cta")}
-              blobColor={SLATE}
-              className="px-7 py-3.5 text-sm font-bold"
-              style={{ backgroundColor: IVORY, color: NAVY }}
-            />
-            <a
-              href="#rutas"
-              className="rounded-full px-7 py-3.5 text-sm font-semibold transition-colors duration-200"
-              style={{ border: "1.5px solid rgba(247,244,237,0.4)", color: IVORY }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(247,244,237,0.1)")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+          <div className="flex flex-col gap-7">
+            <h1
+              className="font-black uppercase leading-[0.88] tracking-tight text-[clamp(2.6rem,9vw,7rem)]"
+              style={{ color: NAVY }}
             >
-              Ver servicios
-            </a>
-          </div>
-        </FlowSection>
+              <SplitLines lines={["Construimos", "Marca Sin", "Fricciones"]} />
+            </h1>
 
-      </FlowArt>
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.68, ease: [0.16, 1, 0.3, 1] }}
+              className="max-w-md text-sm leading-relaxed sm:text-base"
+              style={{ color: "rgba(11,25,86,0.68)" }}
+            >
+              Elige una ruta, cuéntanos tu proyecto, y tu marca empieza a moverse esta semana —
+              con respaldo legal desde el día uno.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.82, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-wrap items-center gap-x-8 gap-y-4"
+            >
+              <HeroLink text="Reservar consultoría" onClick={() => onContact("hero_cta")} />
+              <HeroLink text="Ver servicios" href="#rutas" />
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Marquee inferior */}
+        <div className="relative overflow-hidden border-t py-3.5" style={{ borderColor: "rgba(11,25,86,0.1)" }}>
+          <div className="flex w-max animate-marquee items-center gap-10 whitespace-nowrap">
+            {[0, 1].map((rep) => (
+              <div key={rep} className="flex items-center gap-10">
+                {MARQUEE_ITEMS.map((_, i) => (
+                  <span key={i} className="flex items-center gap-10">
+                    <span className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color: "rgba(11,25,86,0.4)" }}>
+                      Asher Consulting
+                    </span>
+                    <span className="text-xs" style={{ color: SLATE }}>✦</span>
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </section>
     </>
   );
 };
-
-function cx(...parts: Array<string | undefined | false | null>): string {
-  return parts.filter(Boolean).join(" ");
-}

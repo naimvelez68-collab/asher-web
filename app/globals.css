@@ -51,8 +51,24 @@
 }
 
 html {
-  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
+}
+
+/* ── Marquee genérico ── */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee-scroll 26s linear infinite;
+}
+
+/* ── Insignia giratoria (hero) ── */
+@keyframes spin-badge {
+  to { transform: rotate(360deg); }
+}
+.animate-spin-badge {
+  animation: spin-badge 16s linear infinite;
 }
 
 body {
