@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowRight } from "lucide-react";
-import { WordsPullUp } from "./words-pull-up";
+import FlowArt, { FlowSection } from "./story-scroll";
 import { InteractiveHoverButton } from "./interactive-hover-button";
 
 interface AsherHeroProps {
@@ -13,7 +13,6 @@ interface AsherHeroProps {
 // ── Paleta de marca ASHER ──────────────────────────────────────────────────────
 const NAVY = "#0B1956";
 const IVORY = "#F7F4ED";
-const SAND = "#DBC8B6";
 const SLATE = "#8084B7";
 const OLIVE = "#4C5340";
 
@@ -22,8 +21,6 @@ const navItems = [
   { label: "¿Por qué ASHER?", href: "#diferenciador" },
   { label: "Diagnóstico",    href: "#diagnostico" },
 ];
-
-const disciplinas = ["Estrategia", "Legal", "Branding", "Marketing", "Digital", "Crecimiento"];
 
 // ── Isotipo pequeño para el logotype (recorta solo la marca A/S de la imagen) ──
 function AsherMarkIcon({ size = 34 }: { size?: number }) {
@@ -158,216 +155,201 @@ function AsherHeader({ onContact }: { onContact: (o?: string) => void }) {
   );
 }
 
-// ── Hero ──────────────────────────────────────────────────────────────────────
+const headingCls = "text-[clamp(2.75rem,9vw,8.5rem)] font-black uppercase leading-[0.88] tracking-tight";
+const eyebrowCls = "text-xs font-bold uppercase tracking-[0.2em]";
+const bodyCls = "text-[clamp(1rem,2vw,1.4rem)] font-normal leading-relaxed";
+const pillarLabelCls = "mb-2 text-sm font-bold uppercase tracking-wider";
+const pillarTextCls = "text-[clamp(0.85rem,1.2vw,1rem)] leading-relaxed opacity-80";
+
+// ── Hero: secuencia "story-scroll" de marca ────────────────────────────────────
 export const AsherHero = ({ onContact }: AsherHeroProps) => {
   return (
     <>
       <AsherHeader onContact={onContact} />
 
-      <section id="inicio" className="relative w-full">
-        <div className="relative w-full overflow-hidden rounded-b-2xl md:rounded-b-[2rem]">
+      <FlowArt aria-label="Presentación ASHER Consulting">
 
-          {/* Fondo — degradado de marca: marfil → arena */}
-          <div
-            className="absolute inset-0"
-            style={{ background: `linear-gradient(165deg, ${IVORY} 0%, #F1E7DA 45%, ${SAND} 100%)` }}
-          />
+        {/* 01 — Quiénes somos */}
+        <FlowSection id="inicio" aria-label="Quiénes somos" style={{ backgroundColor: NAVY, color: IVORY }}>
+          <p className={eyebrowCls}>01 — Quiénes somos</p>
+          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.25)" }} />
+          <h1 className={headingCls}>
+            Claridad
+            <br />
+            Para
+            <br />
+            Crecer
+          </h1>
+          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.25)" }} />
+          <p className={cx("mt-auto max-w-[50ch]", bodyCls)}>
+            Consultora integral de marca, marketing, tecnología y blindaje legal.
+            Construimos, mejoramos, digitalizamos y protegemos tu marca — con respaldo legal desde el día uno.
+          </p>
+        </FlowSection>
 
-          {/* Grain sutil */}
-          <div className="noise-overlay pointer-events-none absolute inset-0 opacity-[0.1] mix-blend-multiply" />
-
-          {/* Resplandor slate blue — esquina superior derecha */}
-          <div
-            className="pointer-events-none absolute -top-10 right-0 h-[55%] w-[55%] rounded-full blur-[120px] opacity-[0.14]"
-            style={{ background: `radial-gradient(circle, ${SLATE} 0%, transparent 70%)` }}
-          />
-
-          <div className="relative mx-auto max-w-7xl px-5 pb-14 pt-28 sm:px-8 sm:pt-32 md:px-12 lg:pb-20 lg:pt-40">
-            <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-8">
-
-              {/* ── Columna izquierda: copy ── */}
-              <div className="flex flex-col gap-6 lg:col-span-6 xl:col-span-5">
-
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex items-center gap-3"
-                >
-                  <span className="h-px w-8 flex-shrink-0" style={{ background: SLATE }} />
-                  <span className="text-[10px] font-semibold tracking-[0.24em] uppercase" style={{ color: OLIVE }}>
-                    Estrategia para un impacto duradero
-                  </span>
-                </motion.div>
-
-                <h1
-                  className="font-serif font-bold leading-[1.05] tracking-tight text-4xl sm:text-5xl md:text-6xl"
-                  style={{ color: NAVY }}
-                >
-                  <WordsPullUp text="Claridad para lo que sigue" />
-                </h1>
-
-                <motion.p
-                  initial={{ y: 16, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.7, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                  className="max-w-md text-sm leading-relaxed sm:text-base"
-                  style={{ color: "rgba(11,25,86,0.68)" }}
-                >
-                  Consultora integral de legal, branding, marketing y digital.
-                  Construimos, mejoramos y blindamos tu marca con respaldo legal desde el día uno.
-                </motion.p>
-
-                <motion.div
-                  initial={{ y: 16, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.7, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex flex-wrap items-center gap-3"
-                >
-                  <InteractiveHoverButton
-                    text="Reservar consultoría"
-                    icon={<ArrowRight className="h-4 w-4 flex-shrink-0" />}
-                    onClick={() => onContact("hero_cta")}
-                    blobColor={OLIVE}
-                    className="px-6 py-3 text-sm font-bold"
-                    style={{ backgroundColor: NAVY, color: IVORY }}
-                  />
-                  <a
-                    href="#rutas"
-                    className="rounded-full px-6 py-3 text-sm font-semibold transition-colors duration-200"
-                    style={{ border: `1.5px solid rgba(11,25,86,0.25)`, color: NAVY }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(11,25,86,0.06)")}
-                    onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-                  >
-                    Ver servicios
-                  </a>
-                </motion.div>
-
-                {/* ── Barra de estadísticas ── */}
-                <motion.div
-                  initial={{ y: 16, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.7, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                  className="mt-2 flex flex-wrap items-center gap-x-8 gap-y-4 rounded-2xl px-6 py-5"
-                  style={{ background: "#FBF9F5", border: "1px solid rgba(11,25,86,0.1)" }}
-                >
-                  <div>
-                    <p className="text-2xl font-black leading-none" style={{ color: NAVY }}>100+</p>
-                    <p className="mt-1.5 text-[10px] font-semibold uppercase tracking-widest" style={{ color: "rgba(11,25,86,0.5)" }}>
-                      Empresas asesoradas
-                    </p>
-                  </div>
-                  <div className="h-8 w-px" style={{ background: "rgba(11,25,86,0.12)" }} />
-                  <div>
-                    <p className="text-2xl font-black leading-none" style={{ color: NAVY }}>5</p>
-                    <p className="mt-1.5 text-[10px] font-semibold uppercase tracking-widest" style={{ color: "rgba(11,25,86,0.5)" }}>
-                      Disciplinas núcleo
-                    </p>
-                  </div>
-                  <div className="hidden h-8 w-px sm:block" style={{ background: "rgba(11,25,86,0.12)" }} />
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[10px] font-bold uppercase leading-tight tracking-widest" style={{ color: OLIVE }}>
-                      Un mañana mejor,<br />juntos
-                    </span>
-                    <span className="h-px w-6" style={{ background: SLATE }} />
-                  </div>
-                </motion.div>
-
-              </div>
-
-              {/* ── Columna derecha: panel del isotipo 3D ── */}
-              <div className="lg:col-span-6 xl:col-span-7">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.97 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.9, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                  className="relative aspect-[6/5] w-full overflow-hidden rounded-[1.75rem] sm:aspect-[4/3] lg:aspect-[5/6] xl:aspect-[6/5]"
-                  style={{
-                    background: `radial-gradient(120% 90% at 18% 12%, #FFFDF9 0%, ${IVORY} 45%, #EFE1CE 100%)`,
-                    border: "1px solid rgba(11,25,86,0.08)",
-                  }}
-                >
-                  {/* Reflejos de vidrio — sutiles franjas diagonales */}
-                  <div
-                    className="pointer-events-none absolute inset-0 opacity-[0.5]"
-                    style={{
-                      background:
-                        "linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.5) 42%, transparent 54%), linear-gradient(115deg, transparent 62%, rgba(255,255,255,0.35) 70%, transparent 80%)",
-                    }}
-                  />
-
-                  {/* Isotipo de marca */}
-                  <div className="absolute inset-0 flex items-center justify-center p-10 sm:p-14">
-                    <img
-                      src="/asher-logo-mark.png"
-                      alt="ASHER Consulting"
-                      className="max-h-full max-w-full object-contain"
-                      style={{ filter: "drop-shadow(0 24px 40px rgba(11,25,86,0.18))" }}
-                    />
-                  </div>
-
-                  {/* Scrim navy — borde derecho, para legibilidad del texto superpuesto */}
-                  <div
-                    className="pointer-events-none absolute inset-y-0 right-0 w-[42%]"
-                    style={{ background: `linear-gradient(90deg, transparent 0%, rgba(11,25,86,0.55) 100%)` }}
-                  />
-
-                  {/* Texto superpuesto — lista de pilares */}
-                  <div className="pointer-events-none absolute right-5 top-6 flex flex-col gap-1 sm:right-7 sm:top-8">
-                    {["Personas", "Estrategia", "Marcas", "Crecimiento"].map((w) => (
-                      <span key={w} className="text-[11px] font-bold uppercase tracking-[0.18em] sm:text-xs" style={{ color: IVORY }}>
-                        {w}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="pointer-events-none absolute bottom-6 right-5 flex flex-col items-end gap-2 sm:right-7">
-                    <span className="h-px w-8" style={{ background: "rgba(247,244,237,0.5)" }} />
-                    <span className="max-w-[9rem] text-right text-[11px] font-semibold uppercase leading-snug tracking-widest sm:text-xs" style={{ color: IVORY }}>
-                      Un mañana mejor, juntos
-                    </span>
-                  </div>
-                </motion.div>
-              </div>
-
+        {/* 02 — Lo que hacemos */}
+        <FlowSection id="rutas-preview" aria-label="Lo que hacemos" style={{ backgroundColor: "#F1E7DA", color: NAVY }}>
+          <p className={eyebrowCls}>02 — Lo que hacemos</p>
+          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(11,25,86,0.15)" }} />
+          <h2 className={headingCls}>
+            Cinco
+            <br />
+            Rutas
+            <br />
+            Claras
+          </h2>
+          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(11,25,86,0.15)" }} />
+          <p className={cx("max-w-[50ch]", bodyCls)}>
+            Cinco caminos claros hacia el crecimiento, según el momento en el que está tu marca hoy.
+          </p>
+          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(11,25,86,0.15)" }} />
+          <div className="flex flex-wrap gap-[3vw]">
+            <div className="min-w-[180px] flex-1">
+              <p className={pillarLabelCls}>Crear marca</p>
+              <p className={pillarTextCls}>Para emprendedores y negocios que arrancan con todo.</p>
             </div>
-
-            {/* ── Franja "confían en nosotros" ── */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="mt-14 flex flex-col items-center gap-6 pt-10 sm:mt-16 lg:mt-20 lg:flex-row lg:items-center lg:justify-between"
-              style={{ borderTop: "1px solid rgba(11,25,86,0.1)" }}
-            >
-              <p className="text-[10px] font-bold uppercase tracking-[0.28em]" style={{ color: "rgba(11,25,86,0.45)" }}>
-                Confían en nosotros
-              </p>
-
-              <div className="flex flex-wrap items-center justify-center gap-x-7 gap-y-2">
-                {disciplinas.map((d) => (
-                  <span
-                    key={d}
-                    className="text-xs font-bold uppercase tracking-widest"
-                    style={{ color: "rgba(11,25,86,0.38)" }}
-                  >
-                    {d}
-                  </span>
-                ))}
-              </div>
-
-              <div className="flex items-center gap-2">
-                <span className="h-px w-6" style={{ background: SLATE }} />
-                <span className="text-[10px] font-bold uppercase tracking-[0.24em]" style={{ color: OLIVE }}>
-                  Ideas con impacto
-                </span>
-              </div>
-            </motion.div>
-
+            <div className="min-w-[180px] flex-1">
+              <p className={pillarLabelCls}>Mejorar marca</p>
+              <p className={pillarTextCls}>Para marcas que ya existen pero merecen verse mejor.</p>
+            </div>
+            <div className="min-w-[180px] flex-1">
+              <p className={pillarLabelCls}>Publicidad</p>
+              <p className={pillarTextCls}>Para negocios que necesitan más clientes y más ventas.</p>
+            </div>
           </div>
-        </div>
-      </section>
+          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(11,25,86,0.15)" }} />
+          <div className="flex flex-wrap gap-[3vw]">
+            <div className="min-w-[180px] flex-1">
+              <p className={pillarLabelCls}>Digitalización</p>
+              <p className={pillarTextCls}>Para quienes necesitan presencia digital o herramientas tech.</p>
+            </div>
+            <div className="min-w-[180px] flex-1">
+              <p className={pillarLabelCls}>Blindaje legal</p>
+              <p className={pillarTextCls}>Respaldo legal como base de todo lo que construyes.</p>
+            </div>
+            <div className="min-w-[180px] flex-1">
+              <p className={pillarLabelCls}>Diagnóstico</p>
+              <p className={pillarTextCls}>3 preguntas para saber exactamente qué necesitas primero.</p>
+            </div>
+          </div>
+        </FlowSection>
+
+        {/* 03 — Cómo trabajamos */}
+        <FlowSection id="proceso" aria-label="Cómo trabajamos" style={{ backgroundColor: SLATE, color: IVORY }}>
+          <p className={eyebrowCls}>03 — Cómo trabajamos</p>
+          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.3)" }} />
+          <h2 className={headingCls}>
+            Diagnóstico.
+            <br />
+            Estrategia.
+            <br />
+            Ejecución.
+          </h2>
+          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.3)" }} />
+          <p className={cx("max-w-[50ch]", bodyCls)}>
+            Un mismo equipo acompaña tu marca de principio a fin. Sin fragmentar tu proyecto entre múltiples agencias.
+          </p>
+          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.3)" }} />
+          <div className="flex flex-wrap gap-[3vw]">
+            <div className="min-w-[180px] flex-1">
+              <p className={pillarLabelCls}>01 — Diagnóstico</p>
+              <p className={pillarTextCls}>Entendemos tu marca, tu mercado y tu punto de partida real.</p>
+            </div>
+            <div className="min-w-[180px] flex-1">
+              <p className={pillarLabelCls}>02 — Estrategia</p>
+              <p className={pillarTextCls}>Diseñamos un plan de marca, comunicación y crecimiento a la medida.</p>
+            </div>
+            <div className="min-w-[180px] flex-1">
+              <p className={pillarLabelCls}>03 — Ejecución</p>
+              <p className={pillarTextCls}>Implementamos con rigor: diseño, contenido, campañas y desarrollo.</p>
+            </div>
+          </div>
+          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.3)" }} />
+          <div className="flex flex-wrap gap-[3vw]">
+            <div className="min-w-[180px] flex-1">
+              <p className={pillarLabelCls}>04 — Blindaje</p>
+              <p className={pillarTextCls}>Registro de marca, contratos y cumplimiento legal desde el inicio.</p>
+            </div>
+            <div className="min-w-[180px] flex-1">
+              <p className={pillarLabelCls}>05 — Medición</p>
+              <p className={pillarTextCls}>Seguimos resultados reales y ajustamos lo que haga falta.</p>
+            </div>
+            <div className="min-w-[180px] flex-1">
+              <p className={pillarLabelCls}>06 — Crecimiento</p>
+              <p className={pillarTextCls}>Tu marca evoluciona; nosotros seguimos a tu lado en cada etapa.</p>
+            </div>
+          </div>
+        </FlowSection>
+
+        {/* 04 — Nuestra visión */}
+        <FlowSection id="vision" aria-label="Nuestra visión" style={{ backgroundColor: OLIVE, color: IVORY }}>
+          <p className={eyebrowCls}>04 — Nuestra visión</p>
+          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.25)" }} />
+          <h2 className={headingCls}>
+            Un mañana
+            <br />
+            Mejor,
+            <br />
+            Juntos
+          </h2>
+          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.25)" }} />
+          <p className={cx("max-w-[50ch]", bodyCls)}>
+            No ejecutamos tareas sueltas. Construimos crecimiento integral, con lo que construyes quedando protegido de verdad.
+          </p>
+          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.25)" }} />
+          <div className="flex flex-wrap gap-[3vw]">
+            <div className="min-w-[180px] flex-1">
+              <p className={pillarLabelCls}>100+</p>
+              <p className={pillarTextCls}>Empresas asesoradas en branding, marketing y legal.</p>
+            </div>
+            <div className="min-w-[180px] flex-1">
+              <p className={pillarLabelCls}>5</p>
+              <p className={pillarTextCls}>Disciplinas núcleo bajo un mismo techo, un mismo equipo.</p>
+            </div>
+            <div className="min-w-[180px] flex-1">
+              <p className={pillarLabelCls}>Día uno</p>
+              <p className={pillarTextCls}>Respaldo legal desde el primer paso, no como último trámite.</p>
+            </div>
+          </div>
+        </FlowSection>
+
+        {/* 05 — Trabajemos juntos */}
+        <FlowSection id="contacto-hero" aria-label="Trabajemos juntos" style={{ backgroundColor: NAVY, color: IVORY }}>
+          <p className={eyebrowCls}>05 — Trabajemos juntos</p>
+          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.25)" }} />
+          <h2 className={headingCls}>
+            ¿Empezamos?
+          </h2>
+          <hr className="my-[2vw] border-t" style={{ borderColor: "rgba(247,244,237,0.25)" }} />
+          <p className={cx("max-w-[50ch]", bodyCls)}>
+            Cuéntanos en qué punto está tu marca y te decimos exactamente por dónde empezar.
+          </p>
+          <div className="mt-auto flex flex-wrap items-center gap-3">
+            <InteractiveHoverButton
+              text="Reservar consultoría"
+              icon={<ArrowRight className="h-4 w-4 flex-shrink-0" />}
+              onClick={() => onContact("hero_cta")}
+              blobColor={SLATE}
+              className="px-7 py-3.5 text-sm font-bold"
+              style={{ backgroundColor: IVORY, color: NAVY }}
+            />
+            <a
+              href="#rutas"
+              className="rounded-full px-7 py-3.5 text-sm font-semibold transition-colors duration-200"
+              style={{ border: "1.5px solid rgba(247,244,237,0.4)", color: IVORY }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(247,244,237,0.1)")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+            >
+              Ver servicios
+            </a>
+          </div>
+        </FlowSection>
+
+      </FlowArt>
     </>
   );
 };
+
+function cx(...parts: Array<string | undefined | false | null>): string {
+  return parts.filter(Boolean).join(" ");
+}

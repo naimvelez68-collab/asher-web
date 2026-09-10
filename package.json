@@ -16,6 +16,7 @@
   "type": "commonjs",
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "@gsap/react": "^2.1.2",
     "@supabase/supabase-js": "^2.110.0",
     "@types/node": "^26.0.1",
     "clsx": "^2.1.1",
