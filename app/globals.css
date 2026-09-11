@@ -27,6 +27,7 @@
   /* ── Tipografías ── */
   --font-sans: var(--font-geist-sans), "Inter", system-ui, sans-serif;
   --font-serif: var(--font-serif-brand), "Libre Baskerville", "Georgia", serif;
+  --font-mono: var(--font-mono-brand), "IBM Plex Mono", ui-monospace, monospace;
 
   /* ── Radios ── */
   --radius-card: 1rem;

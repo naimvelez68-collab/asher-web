@@ -97,7 +97,7 @@ export const AsherLanding = () => {
     <>
       <main style={{ background: "#F7F4ED" }}>
         <AsherHero onContact={onContactGeneral} />
-        <AsherStoryScroll onContact={onContactGeneral} />
+        <AsherStoryScroll onContact={onContactGeneral} onContactRuta={onContactRuta} />
         <RutasSection onContact={onContactRuta} />
         <DiferenciadorSection />
         <DiagnosticoSection onContact={onContactDiagnostico} />
