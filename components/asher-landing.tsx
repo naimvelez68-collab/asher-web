@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { AsherHero } from "./ui/asher-hero";
 import { AsherStoryScroll } from "./ui/asher-story-scroll";
+import { AsherPhotoCards } from "./ui/asher-photo-cards";
 import { RutasSection } from "./ui/rutas-section";
 import { DiferenciadorSection } from "./ui/diferenciador-section";
 import { DiagnosticoSection } from "./ui/diagnostico-section";
@@ -98,6 +99,7 @@ export const AsherLanding = () => {
       <main style={{ background: "#F7F4ED" }}>
         <AsherHero onContact={onContactGeneral} />
         <AsherStoryScroll onContact={onContactGeneral} onContactRuta={onContactRuta} />
+        <AsherPhotoCards />
         <RutasSection onContact={onContactRuta} />
         <DiferenciadorSection />
         <DiagnosticoSection onContact={onContactDiagnostico} />
