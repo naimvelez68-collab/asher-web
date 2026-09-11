@@ -32,7 +32,7 @@ function useSmoothScroll() {
       const target = document.getElementById(id);
       if (!target) return;
       e.preventDefault();
-      lenis.scrollTo(target, { offset: -72 });
+      lenis.scrollTo(target, { offset: -16 });
     };
     document.addEventListener("click", onAnchorClick);
 

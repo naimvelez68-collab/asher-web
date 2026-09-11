@@ -91,7 +91,7 @@ export function ChatWidget() {
             background: "#F7F4ED", overflow: "hidden",
           }}>
             <img
-              src="/asher-logo-mark.png"
+              src="/asher-logo.png"
               alt="ASHER"
               style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", height: "128%", width: "auto" }}
             />
@@ -124,7 +124,7 @@ export function ChatWidget() {
           <div style={{ padding: "1rem 1.25rem", borderBottom: "1px solid rgba(11,25,86,0.1)", display: "flex", alignItems: "center", gap: "0.75rem", background: "#F1E7DA" }}>
             <div style={{ position: "relative", width: "38px", height: "38px", borderRadius: "50%", border: "1.5px solid rgba(128,132,183,0.45)", overflow: "hidden", flexShrink: 0, background: "#F7F4ED" }}>
               <img
-                src="/asher-logo-mark.png"
+                src="/asher-logo.png"
                 alt="ASHER"
                 style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", height: "128%", width: "auto" }}
               />

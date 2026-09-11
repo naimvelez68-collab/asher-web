@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect, type ElementType } from "react";
+import { useState, type ElementType } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ArrowRight, Play } from "lucide-react";
-import { InteractiveHoverButton } from "./interactive-hover-button";
+import { Menu, X, ArrowRight } from "lucide-react";
 
 interface AsherHeroProps {
   onContact: (origen?: string) => void;
@@ -12,92 +11,98 @@ interface AsherHeroProps {
 // ── Paleta de marca ASHER ──────────────────────────────────────────────────────
 const NAVY = "#0B1956";
 const IVORY = "#F7F4ED";
+const SAND = "#DBC8B6";
 const SLATE = "#8084B7";
 const OLIVE = "#4C5340";
 
+const EASE = [0.16, 1, 0.3, 1] as const;
+
 const navItems = [
-  { label: "Servicios",      href: "#rutas" },
-  { label: "¿Por qué ASHER?", href: "#diferenciador" },
-  { label: "Diagnóstico",    href: "#diagnostico" },
+  { label: "SOBRE",     href: "#diferenciador" },
+  { label: "TRABAJO",   href: "#proceso" },
+  { label: "SERVICIOS", href: "#rutas" },
 ];
 
-// ── Isotipo pequeño para el logotype (recorta solo la marca A/S de la imagen) ──
-function AsherMarkIcon({ size = 34 }: { size?: number }) {
+// ── Isotipo — recorta solo la marca A/S del asset original (sin el texto) ─────
+function AsherMarkIcon({ size }: { size?: number }) {
+  const box = size ? { width: size, height: size } : { width: "100%", height: "100%" };
   return (
-    <div style={{ position: "relative", width: size, height: size, flexShrink: 0, overflow: "hidden" }}>
+    <div style={{ position: "relative", ...box, flexShrink: 0, overflow: "hidden" }}>
       <img
-        src="/asher-logo-mark.png"
+        src="/asher-logo.png"
         alt=""
         aria-hidden
-        style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", height: "128%", width: "auto" }}
+        style={{
+          position: "absolute", top: "-6%", left: "50%", transform: "translateX(-50%)",
+          height: "132%", width: "auto",
+        }}
       />
     </div>
   );
 }
 
-// ── Header sticky ─────────────────────────────────────────────────────────────
+// ── Header / navbar — vive dentro del hero, sin fondo, sombra ni borde ────────
 function AsherHeader({ onContact }: { onContact: (o?: string) => void }) {
-  const [scrolled,    setScrolled]    = useState(false);
   const [menuAbierto, setMenuAbierto] = useState(false);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
-    <header
-      className="fixed left-0 top-0 right-0 z-50 transition-all duration-500"
-      style={{
-        background: scrolled ? "rgba(247,244,237,0.88)" : "rgba(247,244,237,0.0)",
-        backdropFilter: scrolled ? "blur(18px)" : "blur(0px)",
-        borderBottom: scrolled ? `1px solid rgba(11,25,86,0.08)` : "1px solid transparent",
-      }}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.7, ease: EASE }}
+      className="relative z-10 w-full flex-none"
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 md:px-10">
-
-        <a href="#inicio" className="flex items-center gap-2.5 select-none" aria-label="Inicio ASHER">
-          <AsherMarkIcon size={32} />
-          <span className="flex flex-col leading-none">
-            <span className="text-sm font-black tracking-[0.14em] uppercase" style={{ color: NAVY }}>Asher</span>
-            <span className="text-[8px] font-medium tracking-[0.28em] uppercase" style={{ color: "rgba(11,25,86,0.5)" }}>Consulting</span>
+      <div
+        className="mx-auto flex items-center justify-between"
+        style={{
+          height: "clamp(88px, 9vw, 108px)",
+          paddingLeft: "clamp(24px, 3.4vw, 68px)",
+          paddingRight: "clamp(24px, 3.4vw, 68px)",
+        }}
+      >
+        <a href="#inicio" className="flex items-center gap-3 select-none" aria-label="Inicio ASHER">
+          <AsherMarkIcon size={38} />
+          <span className="text-base font-bold tracking-tight" style={{ color: NAVY, fontFamily: "var(--font-sans)" }}>
+            Asher
           </span>
         </a>
 
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-10 lg:gap-14">
           {navItems.map((item) => (
             <a
               key={item.label}
               href={item.href}
-              className="text-xs font-medium tracking-wide transition-colors duration-200"
-              style={{ color: "rgba(11,25,86,0.55)" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = NAVY)}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(11,25,86,0.55)")}
+              className="group relative text-base font-medium"
+              style={{ color: NAVY, letterSpacing: "0" }}
             >
               {item.label}
+              <span
+                className="absolute -bottom-1 left-0 h-px w-full origin-right scale-x-0 transition-transform duration-300 ease-out group-hover:origin-left group-hover:scale-x-100"
+                style={{ background: NAVY }}
+              />
             </a>
           ))}
+          <button
+            onClick={() => onContact("nav_cta")}
+            className="group relative text-base font-medium"
+            style={{ color: NAVY }}
+          >
+            CONTACTO
+            <span
+              className="absolute -bottom-1 left-0 h-px w-full origin-right scale-x-0 transition-transform duration-300 ease-out group-hover:origin-left group-hover:scale-x-100"
+              style={{ background: NAVY }}
+            />
+          </button>
         </nav>
 
-        <div className="flex items-center gap-3">
-          <InteractiveHoverButton
-            text="Reservar consultoría"
-            onClick={() => onContact("header_cta")}
-            blobColor={OLIVE}
-            className="hidden sm:flex px-5 py-2.5 text-xs font-bold"
-            style={{ backgroundColor: NAVY, color: IVORY }}
-          />
-
-          <button
-            onClick={() => setMenuAbierto((v) => !v)}
-            className="flex md:hidden items-center justify-center w-9 h-9 rounded-full transition-colors"
-            style={{ background: "rgba(11,25,86,0.06)", border: "1px solid rgba(11,25,86,0.15)", color: NAVY }}
-            aria-label="Menú"
-          >
-            {menuAbierto ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-          </button>
-        </div>
+        <button
+          onClick={() => setMenuAbierto((v) => !v)}
+          className="flex md:hidden items-center justify-center w-9 h-9"
+          style={{ color: NAVY }}
+          aria-label="Menú"
+        >
+          {menuAbierto ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
       </div>
 
       <AnimatePresence>
@@ -107,36 +112,42 @@ function AsherHeader({ onContact }: { onContact: (o?: string) => void }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden px-5 pb-5 pt-2 flex flex-col gap-1"
-            style={{ background: "rgba(247,244,237,0.97)", borderTop: "1px solid rgba(11,25,86,0.08)" }}
+            className="md:hidden flex flex-col gap-1"
+            style={{
+              background: IVORY,
+              paddingLeft: "clamp(24px, 3.4vw, 68px)",
+              paddingRight: "clamp(24px, 3.4vw, 68px)",
+              paddingBottom: "1.25rem",
+              borderTop: "1px solid rgba(11,25,86,0.08)",
+            }}
           >
             {navItems.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
                 onClick={() => setMenuAbierto(false)}
-                className="py-3 text-sm font-medium transition-colors"
-                style={{ color: "rgba(11,25,86,0.7)", borderBottom: "1px solid rgba(11,25,86,0.06)" }}
+                className="py-3 text-sm font-medium"
+                style={{ color: NAVY, borderBottom: "1px solid rgba(11,25,86,0.06)" }}
               >
                 {item.label}
               </a>
             ))}
-            <InteractiveHoverButton
-              text="Reservar consultoría"
-              onClick={() => { onContact("header_cta_mobile"); setMenuAbierto(false); }}
-              blobColor={OLIVE}
-              className="mt-3 w-full py-3 text-sm font-bold"
-              style={{ backgroundColor: NAVY, color: IVORY }}
-            />
+            <button
+              onClick={() => { onContact("nav_cta_mobile"); setMenuAbierto(false); }}
+              className="py-3 text-left text-sm font-medium"
+              style={{ color: NAVY }}
+            >
+              CONTACTO
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </motion.div>
   );
 }
 
-// ── Texto revelado línea por línea (estilo split-lines de Habito) ─────────────
-function SplitLines({ lines, delayStart = 0.15 }: { lines: string[]; delayStart?: number }) {
+// ── Titular revelado línea por línea ──────────────────────────────────────────
+function SplitLines({ lines, delayStart = 0.55 }: { lines: string[]; delayStart?: number }) {
   return (
     <>
       {lines.map((line, i) => (
@@ -145,7 +156,7 @@ function SplitLines({ lines, delayStart = 0.15 }: { lines: string[]; delayStart?
             style={{ display: "block" }}
             initial={{ y: "110%" }}
             animate={{ y: "0%" }}
-            transition={{ duration: 0.85, delay: delayStart + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, delay: delayStart + i * 0.09, ease: EASE }}
           >
             {line}
           </motion.span>
@@ -155,147 +166,198 @@ function SplitLines({ lines, delayStart = 0.15 }: { lines: string[]; delayStart?
   );
 }
 
-// ── CTA minimalista con subrayado + doble flecha deslizante (estilo Habito) ───
-function HeroLink({
-  text,
-  onClick,
-  href,
-}: {
-  text: string;
-  onClick?: () => void;
-  href?: string;
-}) {
+// ── Link editorial: texto + subrayado + flecha deslizante (sin píldoras) ──────
+function EditorialLink({ text, onClick, href, align = "left" }: { text: string; onClick?: () => void; href?: string; align?: "left" | "right" }) {
   const Comp: ElementType = href ? "a" : "button";
   return (
     <Comp
       href={href}
       onClick={onClick}
-      className="group inline-flex items-center gap-3 text-sm font-semibold sm:text-base"
-      style={{ color: NAVY }}
+      className="group inline-flex items-center gap-2.5"
+      style={{ color: NAVY, justifyContent: align === "right" ? "flex-end" : "flex-start" }}
     >
-      <span className="relative pb-1">
+      <span className="relative pb-1 text-[17px] font-medium sm:text-lg">
         {text}
         <span
-          className="absolute -bottom-0.5 left-0 h-px w-full origin-right scale-x-0 transition-transform duration-500 ease-out group-hover:origin-left group-hover:scale-x-100"
+          className="absolute -bottom-0.5 left-0 h-px w-full origin-right scale-x-0 transition-transform duration-300 ease-out group-hover:origin-left group-hover:scale-x-100"
           style={{ background: NAVY }}
         />
       </span>
-      <span className="relative flex h-7 w-7 flex-shrink-0 items-center justify-center overflow-hidden rounded-full" style={{ background: "rgba(11,25,86,0.08)" }}>
-        <ArrowRight
-          className="absolute h-3.5 w-3.5 transition-transform duration-300 ease-out group-hover:translate-x-5 group-hover:-translate-y-5"
-        />
-        <ArrowRight
-          className="absolute h-3.5 w-3.5 -translate-x-5 translate-y-5 transition-transform duration-300 ease-out group-hover:translate-x-0 group-hover:translate-y-0"
-        />
-      </span>
+      <ArrowRight className="h-4 w-4 flex-shrink-0 transition-transform duration-300 ease-out group-hover:translate-x-1.5" />
     </Comp>
   );
 }
 
-// ── Insignia giratoria — "showreel" de marca ──────────────────────────────────
-function SpinningBadge({ size = 128 }: { size?: number }) {
-  const r = size / 2 - 13;
-  const cx = size / 2;
-  const cy = size / 2;
-  const d = `M ${cx - r},${cy} a ${r},${r} 0 1,1 ${r * 2},0 a ${r},${r} 0 1,1 -${r * 2},0`;
-
+// ── Bloque de media — composición estática de marca (sin foto, sin video) ─────
+function MediaBlock() {
   return (
-    <div style={{ position: "relative", width: size, height: size }}>
-      <svg viewBox={`0 0 ${size} ${size}`} className="animate-spin-badge" style={{ width: "100%", height: "100%" }}>
-        <defs>
-          <path id="asher-badge-path" d={d} />
-        </defs>
-        <text fontSize="9.5" fontWeight={700} letterSpacing="2.5" fill={NAVY}>
-          <textPath href="#asher-badge-path" startOffset="0%">
-            ASHER CONSULTING • ASHER CONSULTING •&nbsp;
-          </textPath>
-        </text>
-      </svg>
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div
-          className="flex items-center justify-center rounded-full"
-          style={{ width: size * 0.34, height: size * 0.34, background: NAVY }}
-        >
-          <Play className="h-3.5 w-3.5" style={{ color: IVORY, marginLeft: 2 }} fill={IVORY} />
+    <div
+      className="relative w-full"
+      style={{ background: NAVY, aspectRatio: "16 / 9" }}
+    >
+      <div className="absolute inset-0 flex items-center justify-between p-6 sm:p-8">
+        <div className="relative h-full aspect-square flex-shrink-0" style={{ background: IVORY, overflow: "hidden" }}>
+          <AsherMarkIcon />
+        </div>
+        <div className="flex flex-col gap-2.5 sm:gap-3">
+          {[SAND, SLATE, OLIVE, IVORY].map((c) => (
+            <div key={c} style={{ background: c, width: "1.6rem", height: "1.6rem" }} />
+          ))}
         </div>
       </div>
     </div>
   );
 }
 
-const MARQUEE_ITEMS = Array.from({ length: 6 });
-
-// ── Hero — inspirado en habito.studio ─────────────────────────────────────────
+// ── Hero — inspirado en la composición editorial de habito.studio ────────────
 export const AsherHero = ({ onContact }: AsherHeroProps) => {
   return (
-    <>
-      <AsherHeader onContact={onContact} />
+    <section
+      id="inicio"
+      className="relative w-full"
+      style={{ background: IVORY, minHeight: "100svh" }}
+    >
+      <div
+        className="mx-auto flex w-full flex-col"
+        style={{
+          minHeight: "100svh",
+          paddingLeft: "clamp(24px, 3.4vw, 68px)",
+          paddingRight: "clamp(24px, 3.4vw, 68px)",
+        }}
+      >
+        <AsherHeader onContact={onContact} />
 
-      <section id="inicio" className="relative w-full overflow-hidden" style={{ background: IVORY }}>
-
-        {/* Resplandor atmosférico */}
-        <div
-          className="pointer-events-none absolute -top-24 right-[-12%] h-[70%] w-[65%] rounded-full blur-[140px] opacity-[0.16]"
-          style={{ background: `radial-gradient(circle, ${SLATE} 0%, transparent 70%)` }}
-        />
-
-        <div className="relative mx-auto flex min-h-[100dvh] w-full max-w-7xl flex-col justify-center gap-10 px-5 pb-16 pt-28 sm:px-8 sm:pt-32 md:px-12 lg:pt-28">
-
-          {/* Insignia giratoria flotante */}
-          <div className="pointer-events-none absolute right-5 top-28 hidden sm:block md:right-10 lg:right-14 lg:top-24">
-            <SpinningBadge size={132} />
-          </div>
-
-          <div className="flex flex-col gap-7">
+          {/* ══ MOBILE / TABLET (< xl): orden Nav → Titular → Media → Caption → Statement → CTAs ══ */}
+          <div className="flex flex-col gap-10 pb-14 pt-6 xl:hidden">
             <h1
-              className="font-black uppercase leading-[0.88] tracking-tight text-[clamp(2.6rem,9vw,7rem)]"
-              style={{ color: NAVY }}
+              className="font-black uppercase text-[clamp(52px,15vw,78px)]"
+              style={{ color: NAVY, lineHeight: 0.9, letterSpacing: "-0.045em", fontFamily: "var(--font-sans)" }}
             >
-              <SplitLines lines={["Construimos", "Marca Sin", "Fricciones"]} />
+              <SplitLines lines={["Construimos", "Marcas Con", "Dirección"]} />
             </h1>
 
+            <div className="flex flex-col gap-3.5">
+              <motion.div
+                initial={{ clipPath: "inset(0 0 100% 0)" }}
+                animate={{ clipPath: "inset(0 0 0% 0)" }}
+                transition={{ duration: 0.9, delay: 0.15, ease: EASE }}
+              >
+                <MediaBlock />
+              </motion.div>
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.9, ease: EASE }}
+                className="text-[19px] font-medium"
+                style={{ color: NAVY }}
+              >
+                ASHER — TRABAJO DESTACADO
+              </motion.p>
+            </div>
+
             <motion.p
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.68, ease: [0.16, 1, 0.3, 1] }}
-              className="max-w-md text-sm leading-relaxed sm:text-base"
-              style={{ color: "rgba(11,25,86,0.68)" }}
+              transition={{ duration: 0.8, delay: 1.05, ease: EASE }}
+              className="text-[clamp(30px,7vw,44px)]"
+              style={{ color: NAVY, lineHeight: 1.1, letterSpacing: "-0.03em", fontFamily: "var(--font-sans)" }}
             >
-              Elige una ruta, cuéntanos tu proyecto, y tu marca empieza a moverse esta semana —
-              con respaldo legal desde el día uno.
+              Estrategia, identidad y crecimiento construidos para mover negocios hacia adelante.
             </motion.p>
 
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.82, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-wrap items-center gap-x-8 gap-y-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.7, delay: 1.25, ease: EASE }}
+              className="flex flex-col gap-4"
             >
-              <HeroLink text="Reservar consultoría" onClick={() => onContact("hero_cta")} />
-              <HeroLink text="Ver servicios" href="#rutas" />
+              <EditorialLink text="SOBRE ASHER" onClick={() => onContact("hero_about")} />
+              <EditorialLink text="INICIAR UN PROYECTO" onClick={() => onContact("hero_cta")} />
             </motion.div>
           </div>
-        </div>
 
-        {/* Marquee inferior */}
-        <div className="relative overflow-hidden border-t py-3.5" style={{ borderColor: "rgba(11,25,86,0.1)" }}>
-          <div className="flex w-max animate-marquee items-center gap-10 whitespace-nowrap">
-            {[0, 1].map((rep) => (
-              <div key={rep} className="flex items-center gap-10">
-                {MARQUEE_ITEMS.map((_, i) => (
-                  <span key={i} className="flex items-center gap-10">
-                    <span className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color: "rgba(11,25,86,0.4)" }}>
-                      Asher Consulting
-                    </span>
-                    <span className="text-xs" style={{ color: SLATE }}>✦</span>
-                  </span>
-                ))}
+          {/* ══ DESKTOP (≥ xl): composición editorial asimétrica ══ */}
+          <div className="hidden flex-1 flex-col xl:flex">
+
+            <div className="grid flex-none grid-cols-12 gap-6 pt-4">
+              <div className="col-start-4 col-span-3">
+                <motion.div
+                  initial={{ clipPath: "inset(0 0 100% 0)" }}
+                  animate={{ clipPath: "inset(0 0 0% 0)" }}
+                  transition={{ duration: 0.9, delay: 0.35, ease: EASE }}
+                  style={{ width: "clamp(390px, 25vw, 500px)" }}
+                >
+                  <MediaBlock />
+                </motion.div>
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 1.05, ease: EASE }}
+                  className="mt-4"
+                  style={{ color: NAVY, fontSize: "19px", fontWeight: 500 }}
+                >
+                  ASHER — TRABAJO DESTACADO
+                </motion.p>
               </div>
-            ))}
-          </div>
-        </div>
 
-      </section>
-    </>
+              <div className="col-start-7 col-span-6">
+                <h1
+                  className="font-black uppercase"
+                  style={{
+                    color: NAVY,
+                    fontSize: "clamp(68px, 6.4vw, 118px)",
+                    lineHeight: 0.9,
+                    letterSpacing: "-0.055em",
+                    fontFamily: "var(--font-sans)",
+                  }}
+                >
+                  <SplitLines lines={["Construimos", "Marcas Con", "Dirección"]} />
+                </h1>
+              </div>
+            </div>
+
+            <div className="flex-1" style={{ minHeight: "3rem" }} />
+
+            <div className="grid flex-none grid-cols-12 items-end gap-6 pb-16">
+              <div className="col-start-1 col-span-5">
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 1.15, ease: EASE }}
+                  style={{
+                    color: NAVY,
+                    fontSize: "clamp(38px, 3.2vw, 60px)",
+                    fontWeight: 400,
+                    lineHeight: 1.08,
+                    letterSpacing: "-0.04em",
+                    maxWidth: "700px",
+                    fontFamily: "var(--font-sans)",
+                  }}
+                >
+                  Estrategia, identidad y crecimiento construidos para mover negocios hacia adelante.
+                </motion.p>
+              </div>
+
+              <div className="col-start-7 col-span-3">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7, delay: 1.35, ease: EASE }}>
+                  <EditorialLink text="SOBRE ASHER" onClick={() => onContact("hero_about")} />
+                </motion.div>
+              </div>
+
+              <div className="col-start-10 col-span-3">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.7, delay: 1.42, ease: EASE }}
+                  className="flex justify-end"
+                >
+                  <EditorialLink text="INICIAR UN PROYECTO" onClick={() => onContact("hero_cta")} align="right" />
+                </motion.div>
+              </div>
+            </div>
+          </div>
+
+      </div>
+    </section>
   );
 };
