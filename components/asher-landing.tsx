@@ -5,11 +5,15 @@ import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { AsherHero } from "./ui/asher-hero";
+import { AsherScrollZoom } from "./ui/asher-scroll-zoom";
 import { AsherStoryScroll } from "./ui/asher-story-scroll";
 import { AsherPhotoCards } from "./ui/asher-photo-cards";
 import { RutasSection } from "./ui/rutas-section";
+import HowItWorks from "./ui/how-it-works";
 import { DiferenciadorSection } from "./ui/diferenciador-section";
+import { AsherPricing } from "./ui/asher-pricing";
 import { DiagnosticoSection } from "./ui/diagnostico-section";
+import { AsherDisciplinasSlider } from "./ui/asher-disciplinas-slider";
 import { CinematicFooter } from "./ui/motion-footer";
 import { LeadModal } from "./ui/lead-modal";
 import { ChatWidget } from "./ui/chat-widget";
@@ -98,11 +102,15 @@ export const AsherLanding = () => {
     <>
       <main style={{ background: "#F7F4ED" }}>
         <AsherHero onContact={onContactGeneral} />
+        <AsherScrollZoom />
         <AsherStoryScroll onContact={onContactGeneral} />
         <AsherPhotoCards />
         <RutasSection onContact={onContactRuta} />
+        <HowItWorks />
         <DiferenciadorSection />
+        <AsherPricing onContact={onContactGeneral} />
         <DiagnosticoSection onContact={onContactDiagnostico} />
+        <AsherDisciplinasSlider />
       </main>
 
       {/* CinematicFooter vive fuera del <main> para que el clip-path funcione */}

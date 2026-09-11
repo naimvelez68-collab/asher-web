@@ -14,6 +14,7 @@
 
   /* ── Acento único — cambiar aquí cambia todo ── */
   --color-accent: #8084b7;
+  --color-accent-foreground: #f7f4ed;
   --color-accent-light: rgba(128, 132, 183, 0.15);
   --color-accent-hover: #6d71a3;
 
@@ -33,6 +34,19 @@
   --radius-card: 1rem;
   --radius-modal: 1.25rem;
   --radius-btn: 9999px;
+  --radius: 0.5rem;
+
+  /* ── Tokens semánticos shadcn — mapeados a la paleta ASHER ── */
+  --color-primary: #0b1956;
+  --color-primary-foreground: #f7f4ed;
+  --color-secondary: #dbc8b6;
+  --color-secondary-foreground: #0b1956;
+  --color-destructive: #b23a3a;
+  --color-destructive-foreground: #f7f4ed;
+  --color-muted: #efe6da;
+  --color-muted-foreground: rgba(11, 25, 86, 0.55);
+  --color-input: rgba(11, 25, 86, 0.15);
+  --color-ring: #8084b7;
 }
 
 /* ── Variables shadcn-compatibles (usadas por el CinematicFooter / GSAP) ── */

@@ -2,7 +2,8 @@
 
 import { useState, useEffect, type ElementType } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ArrowRight, Play } from "lucide-react";
+import { Menu, X, ArrowRight } from "lucide-react";
+import GlyphPortal from "./glyph-portal";
 import { InteractiveHoverButton } from "./interactive-hover-button";
 
 interface AsherHeroProps {
@@ -26,10 +27,10 @@ function AsherMarkIcon({ size = 34 }: { size?: number }) {
   return (
     <div style={{ position: "relative", width: size, height: size, flexShrink: 0, overflow: "hidden" }}>
       <img
-        src="/asher-logo-mark.png"
+        src="/asher-logo.png"
         alt=""
         aria-hidden
-        style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", height: "128%", width: "auto" }}
+        style={{ position: "absolute", top: "-6%", left: "50%", transform: "translateX(-50%)", height: "132%", width: "auto" }}
       />
     </div>
   );
@@ -135,167 +136,96 @@ function AsherHeader({ onContact }: { onContact: (o?: string) => void }) {
   );
 }
 
-// ── Texto revelado línea por línea (estilo split-lines de Habito) ─────────────
-function SplitLines({ lines, delayStart = 0.15 }: { lines: string[]; delayStart?: number }) {
-  return (
-    <>
-      {lines.map((line, i) => (
-        <span key={line} style={{ display: "block", overflow: "hidden" }}>
-          <motion.span
-            style={{ display: "block" }}
-            initial={{ y: "110%" }}
-            animate={{ y: "0%" }}
-            transition={{ duration: 0.85, delay: delayStart + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {line}
-          </motion.span>
-        </span>
-      ))}
-    </>
-  );
-}
-
-// ── CTA minimalista con subrayado + doble flecha deslizante (estilo Habito) ───
-function HeroLink({
-  text,
-  onClick,
-  href,
-}: {
-  text: string;
-  onClick?: () => void;
-  href?: string;
-}) {
+// ── Link editorial: texto + subrayado + flecha (para el contenido revelado) ──
+function HeroLink({ text, onClick, href }: { text: string; onClick?: () => void; href?: string }) {
   const Comp: ElementType = href ? "a" : "button";
   return (
-    <Comp
-      href={href}
-      onClick={onClick}
-      className="group inline-flex items-center gap-3 text-sm font-semibold sm:text-base"
-      style={{ color: NAVY }}
-    >
+    <Comp href={href} onClick={onClick} className="group inline-flex items-center gap-3 text-sm font-semibold sm:text-base" style={{ color: IVORY }}>
       <span className="relative pb-1">
         {text}
         <span
           className="absolute -bottom-0.5 left-0 h-px w-full origin-right scale-x-0 transition-transform duration-500 ease-out group-hover:origin-left group-hover:scale-x-100"
-          style={{ background: NAVY }}
+          style={{ background: IVORY }}
         />
       </span>
-      <span className="relative flex h-7 w-7 flex-shrink-0 items-center justify-center overflow-hidden rounded-full" style={{ background: "rgba(11,25,86,0.08)" }}>
-        <ArrowRight
-          className="absolute h-3.5 w-3.5 transition-transform duration-300 ease-out group-hover:translate-x-5 group-hover:-translate-y-5"
-        />
-        <ArrowRight
-          className="absolute h-3.5 w-3.5 -translate-x-5 translate-y-5 transition-transform duration-300 ease-out group-hover:translate-x-0 group-hover:translate-y-0"
-        />
+      <span className="relative flex h-7 w-7 flex-shrink-0 items-center justify-center overflow-hidden rounded-full" style={{ background: "rgba(247,244,237,0.15)" }}>
+        <ArrowRight className="absolute h-3.5 w-3.5 transition-transform duration-300 ease-out group-hover:translate-x-5 group-hover:-translate-y-5" />
+        <ArrowRight className="absolute h-3.5 w-3.5 -translate-x-5 translate-y-5 transition-transform duration-300 ease-out group-hover:translate-x-0 group-hover:translate-y-0" />
       </span>
     </Comp>
   );
 }
 
-// ── Insignia giratoria — "showreel" de marca ──────────────────────────────────
-function SpinningBadge({ size = 128 }: { size?: number }) {
-  const r = size / 2 - 13;
-  const cx = size / 2;
-  const cy = size / 2;
-  const d = `M ${cx - r},${cy} a ${r},${r} 0 1,1 ${r * 2},0 a ${r},${r} 0 1,1 -${r * 2},0`;
-
+// ── Escena de fondo tras el cristal — atmósfera de marca, sin foto falsa ──────
+function PortalBackground() {
   return (
-    <div style={{ position: "relative", width: size, height: size }}>
-      <svg viewBox={`0 0 ${size} ${size}`} className="animate-spin-badge" style={{ width: "100%", height: "100%" }}>
-        <defs>
-          <path id="asher-badge-path" d={d} />
-        </defs>
-        <text fontSize="9.5" fontWeight={700} letterSpacing="2.5" fill={NAVY}>
-          <textPath href="#asher-badge-path" startOffset="0%">
-            ASHER CONSULTING • ASHER CONSULTING •&nbsp;
-          </textPath>
-        </text>
-      </svg>
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div
-          className="flex items-center justify-center rounded-full"
-          style={{ width: size * 0.34, height: size * 0.34, background: NAVY }}
-        >
-          <Play className="h-3.5 w-3.5" style={{ color: IVORY, marginLeft: 2 }} fill={IVORY} />
-        </div>
-      </div>
-    </div>
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        background: `
+          radial-gradient(circle at 20% 15%, rgba(128,132,183,0.55), transparent 45%),
+          radial-gradient(circle at 82% 75%, rgba(76,83,64,0.4), transparent 50%),
+          linear-gradient(150deg, #0B1956 0%, #16225f 55%, #0B1956 100%)
+        `,
+      }}
+    />
   );
 }
 
-const MARQUEE_ITEMS = Array.from({ length: 6 });
-
-// ── Hero — inspirado en habito.studio ─────────────────────────────────────────
+// ── Hero — cámara de scroll a través de la palabra ASHER (Glyph Portal) ──────
 export const AsherHero = ({ onContact }: AsherHeroProps) => {
   return (
     <>
       <AsherHeader onContact={onContact} />
 
-      <section id="inicio" className="relative w-full overflow-hidden" style={{ background: IVORY }}>
-
-        {/* Resplandor atmosférico */}
-        <div
-          className="pointer-events-none absolute -top-24 right-[-12%] h-[70%] w-[65%] rounded-full blur-[140px] opacity-[0.16]"
-          style={{ background: `radial-gradient(circle, ${SLATE} 0%, transparent 70%)` }}
-        />
-
-        <div className="relative mx-auto flex min-h-[100dvh] w-full max-w-7xl flex-col justify-center gap-10 px-5 pb-16 pt-28 sm:px-8 sm:pt-32 md:px-12 lg:pt-28">
-
-          {/* Insignia giratoria flotante */}
-          <div className="pointer-events-none absolute right-5 top-28 hidden sm:block md:right-10 lg:right-14 lg:top-24">
-            <SpinningBadge size={132} />
-          </div>
-
-          <div className="flex flex-col gap-7">
-            <h1
-              className="font-black uppercase leading-[0.88] tracking-tight text-[clamp(2.6rem,9vw,7rem)]"
-              style={{ color: NAVY }}
+      <div id="inicio" />
+      <GlyphPortal
+        word="ASHER"
+        focusChar="S"
+        scrollLength={2.2}
+        enterLabel="Entrar"
+        background={<PortalBackground />}
+        style={{
+          "--gp-paper": IVORY,
+          "--gp-ink": NAVY,
+          "--gp-field": NAVY,
+          "--gp-foreground": IVORY,
+        }}
+        front={
+          <>
+            <p
+              className="absolute left-1/2 -translate-x-1/2 text-center font-mono text-[10px] uppercase tracking-[0.25em] sm:text-xs"
+              style={{ top: "calc(var(--gp-word-top, 30%) - 40px)", color: "rgba(11,25,86,0.55)" }}
             >
-              <SplitLines lines={["Construimos", "Marca Sin", "Fricciones"]} />
-            </h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.68, ease: [0.16, 1, 0.3, 1] }}
-              className="max-w-md text-sm leading-relaxed sm:text-base"
-              style={{ color: "rgba(11,25,86,0.68)" }}
+              Estrategia · Marca · Digital · Legal
+            </p>
+            <p
+              className="absolute left-1/2 -translate-x-1/2 px-6 text-center text-sm sm:text-base"
+              style={{ top: "calc(var(--gp-word-bottom, 60%) + 20px)", color: "rgba(11,25,86,0.6)" }}
             >
-              Elige una ruta, cuéntanos tu proyecto, y tu marca empieza a moverse esta semana —
-              con respaldo legal desde el día uno.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.82, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-wrap items-center gap-x-8 gap-y-4"
-            >
-              <HeroLink text="Reservar consultoría" onClick={() => onContact("hero_cta")} />
-              <HeroLink text="Ver servicios" href="#rutas" />
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Marquee inferior */}
-        <div className="relative overflow-hidden border-t py-3.5" style={{ borderColor: "rgba(11,25,86,0.1)" }}>
-          <div className="flex w-max animate-marquee items-center gap-10 whitespace-nowrap">
-            {[0, 1].map((rep) => (
-              <div key={rep} className="flex items-center gap-10">
-                {MARQUEE_ITEMS.map((_, i) => (
-                  <span key={i} className="flex items-center gap-10">
-                    <span className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color: "rgba(11,25,86,0.4)" }}>
-                      Asher Consulting
-                    </span>
-                    <span className="text-xs" style={{ color: SLATE }}>✦</span>
-                  </span>
-                ))}
-              </div>
-            ))}
+              Cinco disciplinas. Un mismo equipo.
+            </p>
+          </>
+        }
+      >
+        <div className="mx-auto flex max-w-2xl flex-col items-start gap-6">
+          <p className="font-mono text-[10px] uppercase tracking-[0.25em]" style={{ color: "rgba(247,244,237,0.55)" }}>
+            Estás dentro de ASHER
+          </p>
+          <h2 className="font-medium tracking-tight" style={{ fontSize: "clamp(1.75rem,4vw,3rem)", color: IVORY, lineHeight: 1.1 }}>
+            Construimos marca sin fricciones.
+          </h2>
+          <p className="max-w-lg text-sm leading-relaxed sm:text-base" style={{ color: "rgba(247,244,237,0.75)" }}>
+            Elige una ruta, cuéntanos tu proyecto, y tu marca empieza a moverse esta semana —
+            con respaldo legal desde el día uno.
+          </p>
+          <div className="mt-2 flex flex-wrap items-center gap-x-8 gap-y-4">
+            <HeroLink text="Reservar consultoría" onClick={() => onContact("hero_cta")} />
+            <HeroLink text="Ver servicios" href="#rutas" />
           </div>
         </div>
-
-      </section>
+      </GlyphPortal>
     </>
   );
 };
