@@ -5,7 +5,7 @@
  * Origin: UsefulPortal.astro on https://ktzm.dk → UsefulPortal.tsx → ClarityPortal.tsx.
  * A scroll-driven camera through live type. Keep this notice with copies.
  */
-import { useId, useLayoutEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import { useLayoutEffect, useRef, type CSSProperties, type ReactNode } from "react";
 
 export type GlyphPortalStyle = CSSProperties & {
   "--gp-paper"?: string;
@@ -91,7 +91,10 @@ export default function GlyphPortal({
   fontFamily = DEFAULT_FONT, fontWeight = 900, annotations = false,
   enterLabel = "Enter section", className, style, onProgress,
 }: GlyphPortalProps) {
-  const uid = `gp-${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
+  // Derived from props (not useId): Next's App Router can assign useId() a different
+  // per-request id on the SSG pass vs. the client hydration pass, which mismatches this
+  // id inside the injected <style> text and forces the whole page to client-render.
+  const uid = `gp-${(word.replace(/[^a-zA-Z0-9]/g, "") || "portal").toLowerCase()}`;
   const clipId = `${uid}-clip`;
   const sectionRef = useRef<HTMLElement>(null);
   const progressRef = useRef(onProgress);
@@ -345,7 +348,7 @@ export default function GlyphPortal({
       style={{ "--gp-length": length, "--gp-characters": Array.from(text).length, ...style } as CSSProperties}>
       <style>{`
         ${q}{--gp-paper:#fff;--gp-ink:#0c1212;--gp-field:#0b3b2a;--gp-foreground:#fbfbfa;position:relative;isolation:isolate;background:var(--gp-paper);color:var(--gp-ink);font-family:Arial,sans-serif;}
-        ${q}>[data-gp-viewport]{position:absolute;inset:0 auto auto 0;height:100vh;height:100svh;width:0;pointer-events:none;visibility:hidden;}
+        ${q} [data-gp-viewport]{position:absolute;inset:0 auto auto 0;height:100vh;height:100svh;width:0;pointer-events:none;visibility:hidden;}
         ${q} [data-gp-pin]{position:relative;height:var(--gp-height,100svh);overflow:clip;isolation:isolate;container-type:size;}
         ${q} [data-gp-field]{position:absolute;inset:0;background:var(--gp-field);opacity:0;pointer-events:none;}
         ${q}[data-gp-ready] [data-gp-field]{opacity:1;}

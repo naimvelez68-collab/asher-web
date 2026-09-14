@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect, type ElementType } from "react";
+import { useState, useRef, useCallback, type ElementType, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import GlyphPortal from "./glyph-portal";
-import { InteractiveHoverButton } from "./interactive-hover-button";
 
 interface AsherHeroProps {
   onContact: (origen?: string) => void;
@@ -13,13 +12,14 @@ interface AsherHeroProps {
 // ── Paleta de marca ASHER ──────────────────────────────────────────────────────
 const NAVY = "#0B1956";
 const IVORY = "#F7F4ED";
-const SLATE = "#8084B7";
-const OLIVE = "#4C5340";
 
+// ── Arquitectura de navegación — adaptada de yourcreative.com.au ─────────────
 const navItems = [
-  { label: "Servicios",      href: "#rutas" },
-  { label: "¿Por qué ASHER?", href: "#diferenciador" },
-  { label: "Diagnóstico",    href: "#diagnostico" },
+  { label: "Proyectos", href: "#disciplinas" },
+  { label: "Servicios", href: "#rutas" },
+  { label: "Estudio",   href: "#diferenciador" },
+  { label: "Áreas",     href: "#proceso" },
+  { label: "Insights",  href: "#diagnostico" },
 ];
 
 // ── Isotipo pequeño para el logotype (recorta solo la marca A/S de la imagen) ──
@@ -36,103 +36,160 @@ function AsherMarkIcon({ size = 34 }: { size?: number }) {
   );
 }
 
-// ── Header sticky ─────────────────────────────────────────────────────────────
-function AsherHeader({ onContact }: { onContact: (o?: string) => void }) {
-  const [scrolled,    setScrolled]    = useState(false);
-  const [menuAbierto, setMenuAbierto] = useState(false);
+// ── Link de navegación editorial (para el pill oscuro) ────────────────────────
+function PillNavLink({ href, children }: { href: string; children: ReactNode }) {
+  return (
+    <a
+      href={href}
+      className="group relative inline-flex items-center px-3 py-2 sm:px-4"
+    >
+      <span
+        className="relative text-[13px] font-normal tracking-[0.01em] transition-colors sm:text-[15px]"
+        style={{ color: "rgba(247,244,237,0.72)", transitionDuration: "350ms", transitionTimingFunction: "cubic-bezier(.22,1,.36,1)" }}
+        onMouseEnter={(e) => (e.currentTarget.style.color = IVORY)}
+        onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(247,244,237,0.72)")}
+      >
+        {children}
+        <span
+          aria-hidden
+          className="absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 transition-transform group-hover:scale-x-100"
+          style={{ background: "currentColor", transitionDuration: "350ms", transitionTimingFunction: "cubic-bezier(.22,1,.36,1)" }}
+        />
+      </span>
+    </a>
+  );
+}
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+// ── "Hablemos ↗" — enlace editorial, no botón/CTA SaaS ───────────────────────
+function HablemosLink({ onClick, dark }: { onClick: () => void; dark: boolean }) {
+  const color = dark ? IVORY : NAVY;
+  return (
+    <button
+      onClick={onClick}
+      className="group inline-flex items-center gap-1.5 text-[13px] font-normal uppercase tracking-[0.06em] transition-colors sm:text-sm"
+      style={{ color, transitionDuration: "350ms", transitionTimingFunction: "cubic-bezier(.22,1,.36,1)" }}
+    >
+      <span className="relative">
+        Hablemos
+        <span
+          aria-hidden
+          className="absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 transition-transform group-hover:scale-x-100"
+          style={{ background: "currentColor", transitionDuration: "350ms", transitionTimingFunction: "cubic-bezier(.22,1,.36,1)" }}
+        />
+      </span>
+      <span
+        aria-hidden
+        className="inline-block transition-transform motion-reduce:transform-none"
+        style={{ transitionDuration: "350ms", transitionTimingFunction: "cubic-bezier(.22,1,.36,1)" }}
+      >
+        <span className="inline-block transition-transform duration-[350ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:translate-x-[2px] group-hover:-translate-y-[2px]">↗</span>
+      </span>
+    </button>
+  );
+}
+
+// ── Header — arquitectura adaptada de yourcreative.com.au ─────────────────────
+// Composición en dos niveles, no una navbar SaaS convencional:
+//  1) fila superior fija (logo · Hablemos · Menu), siempre transparente;
+//  2) pill de navegación oscuro, fijo, separado y centrado debajo de esa fila.
+// El texto de la fila superior cambia de Navy a Ivory cuando el fondo del Hero
+// (el Glyph Portal) se vuelve oscuro, para mantener contraste sin agregar
+// ninguna cápsula/fondo al header (ver `dark` prop, alimentado por el progreso
+// de scroll del portal).
+function AsherHeader({ onContact, dark }: { onContact: (o?: string) => void; dark: boolean }) {
+  const [menuAbierto, setMenuAbierto] = useState(false);
+  const topColor = dark ? IVORY : NAVY;
 
   return (
-    <header
-      className="fixed left-0 top-0 right-0 z-50 transition-all duration-500"
-      style={{
-        background: scrolled ? "rgba(247,244,237,0.88)" : "rgba(247,244,237,0.0)",
-        backdropFilter: scrolled ? "blur(18px)" : "blur(0px)",
-        borderBottom: scrolled ? `1px solid rgba(11,25,86,0.08)` : "1px solid transparent",
-      }}
-    >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 md:px-10">
-
-        <a href="#inicio" className="flex items-center gap-2.5 select-none" aria-label="Inicio ASHER">
-          <AsherMarkIcon size={32} />
-          <span className="flex flex-col leading-none">
-            <span className="text-sm font-black tracking-[0.14em] uppercase" style={{ color: NAVY }}>Asher</span>
-            <span className="text-[8px] font-medium tracking-[0.28em] uppercase" style={{ color: "rgba(11,25,86,0.5)" }}>Consulting</span>
-          </span>
-        </a>
-
-        <nav className="hidden md:flex items-center gap-8">
-          {navItems.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              className="text-xs font-medium tracking-wide transition-colors duration-200"
-              style={{ color: "rgba(11,25,86,0.55)" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = NAVY)}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(11,25,86,0.55)")}
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-3">
-          <InteractiveHoverButton
-            text="Reservar consultoría"
-            onClick={() => onContact("header_cta")}
-            blobColor={OLIVE}
-            className="hidden sm:flex px-5 py-2.5 text-xs font-bold"
-            style={{ backgroundColor: NAVY, color: IVORY }}
-          />
-
-          <button
-            onClick={() => setMenuAbierto((v) => !v)}
-            className="flex md:hidden items-center justify-center w-9 h-9 rounded-full transition-colors"
-            style={{ background: "rgba(11,25,86,0.06)", border: "1px solid rgba(11,25,86,0.15)", color: NAVY }}
-            aria-label="Menú"
+    <>
+      <header
+        className="fixed left-0 right-0 top-0 z-50"
+        style={{ paddingBlock: 20, paddingInline: "clamp(20px, 2.6vw, 35px)" }}
+      >
+        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4">
+          <a
+            href="/"
+            className="flex items-center gap-2 select-none"
+            aria-label="Inicio ASHER"
           >
-            {menuAbierto ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-          </button>
-        </div>
-      </div>
+            <AsherMarkIcon size={30} />
+            <span
+              className="text-sm font-medium tracking-[0.08em] uppercase transition-colors"
+              style={{ color: topColor, transitionDuration: "400ms" }}
+            >
+              Asher
+            </span>
+          </a>
 
+          <div />
+
+          <div className="flex items-center gap-5 sm:gap-7">
+            <HablemosLink onClick={() => onContact("header_hablemos")} dark={dark} />
+
+            <button
+              type="button"
+              onClick={() => setMenuAbierto((v) => !v)}
+              aria-label="Abrir menú"
+              aria-expanded={menuAbierto}
+              aria-controls="asher-mobile-menu"
+              className="text-[13px] font-normal uppercase tracking-[0.06em] transition-colors sm:text-sm"
+              style={{ color: topColor, transitionDuration: "400ms" }}
+            >
+              Menu
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Pill de navegación — fijo, separado del header, centrado */}
+      <nav
+        aria-label="Navegación principal"
+        className="fixed left-1/2 top-[86px] z-40 hidden -translate-x-1/2 md:block"
+      >
+        <div
+          className="flex items-center rounded-full"
+          style={{ background: "rgba(11,25,86,0.85)" }}
+        >
+          {navItems.map((item) => (
+            <PillNavLink key={item.label} href={item.href}>{item.label}</PillNavLink>
+          ))}
+        </div>
+      </nav>
+
+      {/* Menú móvil funcional — el fullscreen queda para una fase futura */}
       <AnimatePresence>
         {menuAbierto && (
           <motion.div
+            id="asher-mobile-menu"
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-            className="md:hidden px-5 pb-5 pt-2 flex flex-col gap-1"
-            style={{ background: "rgba(247,244,237,0.97)", borderTop: "1px solid rgba(11,25,86,0.08)" }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-x-4 top-[72px] z-40 flex flex-col gap-1 rounded-2xl p-3 md:hidden"
+            style={{ background: "rgba(11,25,86,0.92)", backdropFilter: "blur(10px)" }}
           >
             {navItems.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
                 onClick={() => setMenuAbierto(false)}
-                className="py-3 text-sm font-medium transition-colors"
-                style={{ color: "rgba(11,25,86,0.7)", borderBottom: "1px solid rgba(11,25,86,0.06)" }}
+                className="rounded-xl px-4 py-3 text-sm font-normal transition-colors"
+                style={{ color: "rgba(247,244,237,0.85)" }}
               >
                 {item.label}
               </a>
             ))}
-            <InteractiveHoverButton
-              text="Reservar consultoría"
-              onClick={() => { onContact("header_cta_mobile"); setMenuAbierto(false); }}
-              blobColor={OLIVE}
-              className="mt-3 w-full py-3 text-sm font-bold"
-              style={{ backgroundColor: NAVY, color: IVORY }}
-            />
+            <button
+              onClick={() => { onContact("header_hablemos_mobile"); setMenuAbierto(false); }}
+              className="mt-1 rounded-xl px-4 py-3 text-left text-sm font-normal uppercase tracking-[0.06em]"
+              style={{ color: IVORY }}
+            >
+              Hablemos ↗
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 }
 
@@ -175,9 +232,23 @@ function PortalBackground() {
 
 // ── Hero — cámara de scroll a través de la palabra ASHER (Glyph Portal) ──────
 export const AsherHero = ({ onContact }: AsherHeroProps) => {
+  // El header no lleva fondo/cápsula propia (ver Fase 11-12), así que su texto
+  // debe pasar de Navy a Ivory cuando el Glyph Portal revela su campo oscuro.
+  // Se lee el progreso ya expuesto por GlyphPortal (onProgress) sin tocar su
+  // contenido/comportamiento, y solo se re-renderiza al cruzar el umbral.
+  const isDarkRef = useRef(false);
+  const [isDark, setIsDark] = useState(false);
+  const handlePortalProgress = useCallback((p: number) => {
+    const dark = p > 0.55;
+    if (dark !== isDarkRef.current) {
+      isDarkRef.current = dark;
+      setIsDark(dark);
+    }
+  }, []);
+
   return (
     <>
-      <AsherHeader onContact={onContact} />
+      <AsherHeader onContact={onContact} dark={isDark} />
 
       <div id="inicio" />
       <GlyphPortal
@@ -185,6 +256,7 @@ export const AsherHero = ({ onContact }: AsherHeroProps) => {
         focusChar="S"
         scrollLength={2.2}
         enterLabel="Entrar"
+        onProgress={handlePortalProgress}
         background={<PortalBackground />}
         style={{
           "--gp-paper": IVORY,
