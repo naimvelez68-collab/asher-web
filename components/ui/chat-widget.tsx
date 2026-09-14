@@ -86,16 +86,11 @@ export function ChatWidget() {
             <path d="M18 6L6 18M6 6l12 12"/>
           </svg>
         ) : (
-          <div style={{
-            position: "relative", width: "76%", height: "76%", borderRadius: "30%",
-            background: "#F7F4ED", overflow: "hidden",
-          }}>
-            <img
-              src="/asher-logo.png"
-              alt="ASHER"
-              style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", height: "128%", width: "auto" }}
-            />
-          </div>
+          <img
+            src="/teito-mascota.png"
+            alt="TEÍTO"
+            style={{ width: "88%", height: "88%", objectFit: "contain" }}
+          />
         )}
       </button>
 
@@ -122,11 +117,11 @@ export function ChatWidget() {
 
           {/* Header */}
           <div style={{ padding: "1rem 1.25rem", borderBottom: "1px solid rgba(11,25,86,0.1)", display: "flex", alignItems: "center", gap: "0.75rem", background: "#F1E7DA" }}>
-            <div style={{ position: "relative", width: "38px", height: "38px", borderRadius: "50%", border: "1.5px solid rgba(128,132,183,0.45)", overflow: "hidden", flexShrink: 0, background: "#F7F4ED" }}>
+            <div style={{ position: "relative", width: "38px", height: "38px", borderRadius: "50%", border: "1.5px solid rgba(128,132,183,0.45)", overflow: "hidden", flexShrink: 0, background: "#F1E7DA", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <img
-                src="/asher-logo.png"
-                alt="ASHER"
-                style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", height: "128%", width: "auto" }}
+                src="/teito-mascota.png"
+                alt="TEÍTO"
+                style={{ width: "92%", height: "92%", objectFit: "contain" }}
               />
             </div>
             <div>

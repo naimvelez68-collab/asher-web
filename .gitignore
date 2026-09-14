@@ -1,6 +1,9 @@
 # dependencies
 /node_modules
 
+# scratch
+.scratch-bgremove
+
 # next.js
 /.next/
 /out/
